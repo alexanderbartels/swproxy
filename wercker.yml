@@ -17,15 +17,19 @@ box: debian
 # http://devcenter.wercker.com/docs/pipelines/index.html
 build:
     steps:
+        - npm-install:
+        - npm-test
         - script:
-            name: test application
-            code: npm install
-        - script:
-            name: create distribution
-            code: ./node_modules/.bin/gulp
-        - script:
-            name: create documentation
+            name: create es5 compatible build result with babel
             code: ./node_modules/.bin/gulp babel
+
+        # A custom script step, name value is used in the UI
+         # and the code value contains the command that get executed
+        - script:
+            name: echo nodejs information
+            code: |
+                 echo "node version $(node -v) running"
+                 echo "npm version $(npm -v) running"
 deploy:
     steps:
         - github-create-release:
