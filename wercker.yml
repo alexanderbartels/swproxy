@@ -30,6 +30,8 @@ build:
             code: |
                  echo "node version $(node -v) running"
                  echo "npm version $(npm -v) running"
+        - samverschueren/package-version:
+            envvar: GITHUB_RELEASE_VERSION
 deploy:
     steps:
         - github-create-release:
