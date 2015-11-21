@@ -33,12 +33,12 @@ build:
 deploy:
     steps:
         - github-create-release:
-            token: $GITHUB_TOKEN
+            token: $GIT_TOKEN
             tag: $GITHUB_RELEASE_VERSION
             title: Application $GITHUB_RELEASE_VERSION
             draft: true
         - github-upload-asset:
-            token: $GITHUB_TOKEN
+            token: $GIT_TOKEN
             file: build.tgz
             filename: app-$GITHUB_RELEASE_VERSION.tgz
         - turistforeningen/npm-publish
