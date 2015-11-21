@@ -17,7 +17,7 @@ box: debian
 # http://devcenter.wercker.com/docs/pipelines/index.html
 build:
     steps:
-        - npm-install:
+        - npm-install
         - npm-test
         - script:
             name: create es5 compatible build result with babel
