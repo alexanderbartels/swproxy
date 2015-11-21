@@ -16,12 +16,25 @@ box: debian
 # Read more about pipelines on our dev center
 # http://devcenter.wercker.com/docs/pipelines/index.html
 build:
-    # Steps make up the actions in your pipeline
-    # Read more about steps on our dev center:
-    # http://devcenter.wercker.com/docs/steps/index.html
-  steps:
-    - script:
-        name: echo
-        code: |
-          echo "hello world!"
-
+    steps:
+        - script:
+            name: test application
+            code: npm install
+        - script:
+            name: create distribution
+            code: ./node_modules/.bin/gulp
+        - script:
+            name: create documentation
+            code: ./node_modules/.bin/gulp babel
+deploy:
+    steps:
+        - github-create-release:
+            token: $GITHUB_TOKEN
+            tag: $GITHUB_RELEASE_VERSION
+            title: Application $GITHUB_RELEASE_VERSION
+            draft: true
+        - github-upload-asset:
+            token: $GITHUB_TOKEN
+            file: build.tgz
+            filename: app-$GITHUB_RELEASE_VERSION.tgz
+        - turistforeningen/npm-publish
