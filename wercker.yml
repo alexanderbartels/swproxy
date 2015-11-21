@@ -2,7 +2,7 @@
 # Docker Hub https://registry.hub.docker.com/_/debian/
 # Read more about containers on our dev center
 # http://devcenter.wercker.com/docs/containers/index.html
-box: nodesource/trusty
+box: wercker/ubuntu12.04-nodejs0.10
 # You can also use services such as databases. Read more on our dev center:
 # http://devcenter.wercker.com/docs/services/index.html
 # services:
