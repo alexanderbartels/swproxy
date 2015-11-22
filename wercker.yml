@@ -35,6 +35,12 @@ build:
 
 deploy:
     steps:
+        - script:
+            name: echo nodejs information
+            code: |
+                 echo "node version $(node -v) running"
+                 echo "npm version $(npm -v) running"
+                 echo "swproxy version $(GITHUB_RELEASE_VERSION)"
         - github-create-release:
             token: $GIT_TOKEN
             tag: $GITHUB_RELEASE_VERSION
