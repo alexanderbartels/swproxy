@@ -1,4 +1,4 @@
 node_modules
 dist
-coverage/Icov-report
+coverage/lcov-report
 coverage/coverage-final.json
