@@ -35,6 +35,8 @@ build:
 
 deploy:
     steps:
+        - samverschueren/package-version:
+            envvar: GITHUB_RELEASE_VERSION
         - script:
             name: echo nodejs information
             code: |
