@@ -1,3 +1,4 @@
 node_modules
-coverage
 dist
+coverage/Icov-report
+coverage/coverage-final.json
