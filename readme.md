@@ -1,6 +1,7 @@
 # swproxy 
 [![NPM version][npm-image]][npm-url] [![wercker status](https://app.wercker.com/status/60a2d039560adbf52b7b1467b49fdc7a/m/master "wercker status")](https://app.wercker.com/project/bykey/60a2d039560adbf52b7b1467b49fdc7a)
-[![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
+[![Dependency Status][daviddm-image]][daviddm-url] [![Coverage Status](https://coveralls.io/repos/alexanderbartels/swproxy/badge.svg?branch=master&service=github)](https://coveralls.io/github/alexanderbartels/swproxy?branch=master)
+
 
 ## work in progress
 
@@ -10,5 +11,4 @@
 [travis-image]: https://travis-ci.org/alexanderbartels/swproxy.svg?branch=master
 [daviddm-image]: https://david-dm.org/alexanderbartels/swproxy.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org/alexanderbartels/swproxy
-[coveralls-image]: https://coveralls.io/repos/alexanderbartels/swproxy/badge.svg
-[coveralls-url]: https://coveralls.io/r/alexanderbartels/swproxy
+
