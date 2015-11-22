@@ -15,11 +15,11 @@
 <div class="header high">
     <h1>Code coverage report for <span class="entity">src/swproxy.js</span></h1>
     <h2>
-        Statements: <span class="metric">81.08% <small>(30 / 37)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Branches: <span class="metric">100% <small>(10 / 10)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Functions: <span class="metric">33.33% <small>(4 / 12)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Lines: <span class="metric">22.22% <small>(2 / 9)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Ignored: <span class="metric">27 statements, 4 functions, 10 branches</span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">93.18% <small>(41 / 44)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">100% <small>(14 / 14)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">53.85% <small>(7 / 13)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">81.25% <small>(13 / 16)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric">5 statements, 4 branches</span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
     <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">src/</a> &#187; swproxy.js</div>
 </div>
@@ -62,17 +62,63 @@
 35
 36
 37
-38</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -103,13 +149,36 @@
  * The Proxy for service workers
  */
 /*eslint-disable no-alert, no-console */
-class SwProxy<span class="fstat-no" title="function not covered" > </span>{
-  constructor<span class="fstat-no" title="function not covered" >(serviceWorker) {</span>
-<span class="cstat-no" title="statement not covered" >    this.serviceWorker = serviceWorker;</span>
+class SwProxy {
+  constructor(serviceWorker) {
+    this.serviceWorker = serviceWorker;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    this.serviceWorker.addEventListener('install', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onInstall(event));</span>
-<span class="cstat-no" title="statement not covered" >    this.serviceWorker.addEventListener('activate', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onActivate(event));</span>
-<span class="cstat-no" title="statement not covered" >    this.serviceWorker.addEventListener('fetch', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onFetch(event));</span>
+    this.serviceWorker.addEventListener('install', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onInstall(event));
+    this.serviceWorker.addEventListener('activate', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onActivate(event));
+    this.serviceWorker.addEventListener('fetch', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onFetch(event));
+  }
+&nbsp;
+  /**
+   * registers a mod
+   *
+   * @param mod should be from the type swproxy-mod
+   *
+   * return true if registration was successful, otherwise false
+   */
+  registerMod(mod) {
+    let factoryMethodName = mod.factoryMethodName();
+&nbsp;
+    //mod already registered?
+    if (typeof this[factoryMethodName] === 'function') {
+      return false;
+    }
+&nbsp;
+    if (typeof mod.factoryMethod === 'function') {
+      this[factoryMethodName] = mod.factoryMethod(this);
+      return true;
+    }
+&nbsp;
+    return false;
   }
 &nbsp;
   /**
@@ -141,7 +210,7 @@ export default SwProxy;
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Nov 22 2015 20:03:28 GMT+0100 (CET)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Nov 22 2015 21:36:47 GMT+0100 (CET)</div>
 </div>
 <script src="../prettify.js"></script>
 <script>

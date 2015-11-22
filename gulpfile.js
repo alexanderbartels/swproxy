@@ -8,6 +8,7 @@ var nsp = require('gulp-nsp');
 var plumber = require('gulp-plumber');
 var coveralls = require('gulp-coveralls');
 var babel = require('gulp-babel');
+var stripLine = require('gulp-strip-line');
 var del = require('del');
 var isparta = require('isparta');
 
@@ -62,6 +63,8 @@ gulp.task('coveralls', ['test'], function () {
 
 gulp.task('babel', ['clean'], function () {
   return gulp.src('src/**/*.js')
+    // remove export default, so the result can be loaded without errors in the client
+    .pipe(stripLine([/^export default/]))
     .pipe(babel())
     .pipe(gulp.dest('dist'));
 });

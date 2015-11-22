@@ -12,6 +12,29 @@ class SwProxy {
   }
 
   /**
+   * registers a mod
+   *
+   * @param mod should be from the type swproxy-mod
+   *
+   * return true if registration was successful, otherwise false
+   */
+  registerMod(mod) {
+    let factoryMethodName = mod.factoryMethodName();
+
+    //mod already registered?
+    if (typeof this[factoryMethodName] === 'function') {
+      return false;
+    }
+
+    if (typeof mod.factoryMethod === 'function') {
+      this[factoryMethodName] = mod.factoryMethod(this);
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * called if the install event from the service worker is fired
    */
   onInstall(event) {
