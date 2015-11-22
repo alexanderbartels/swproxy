@@ -22,7 +22,8 @@ build:
         - script:
             name: create es5 compatible build result with babel
             code: ./node_modules/.bin/gulp babel
-
+        - samverschueren/package-version:
+            envvar: GITHUB_RELEASE_VERSION
         # A custom script step, name value is used in the UI
          # and the code value contains the command that get executed
         - script:
@@ -30,15 +31,13 @@ build:
             code: |
                  echo "node version $(node -v) running"
                  echo "npm version $(npm -v) running"
-        - samverschueren/package-version:
-            envvar: GITHUB_RELEASE_VERSION
+                 echo "swproxy version $(GITHUB_RELEASE_VERSION)"
+
 deploy:
     steps:
         - github-create-release:
             token: $GIT_TOKEN
             tag: $GITHUB_RELEASE_VERSION
-            tag_name: swproxy $GITHUB_RELEASE_VERSION
-            draft: false
         #- github-upload-asset:
         #    token: $GIT_TOKEN
         #    file: build.tgz
