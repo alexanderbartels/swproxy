@@ -52,6 +52,10 @@ gulp.task('test', ['pre-test'], function (cb) {
 });
 
 gulp.task('coveralls', ['test'], function () {
+  if (!process.env.CI) {
+    return;
+  }
+
   return gulp.src(path.join(__dirname, 'coverage/lcov.info'))
     .pipe(coveralls());
 });
@@ -67,5 +71,5 @@ gulp.task('clean', function () {
 });
 
 gulp.task('prepublish', ['nsp', 'babel']);
-gulp.task('test-ci', ['static', 'test', 'coveralls']);
+gulp.task('test-ci', ['static', 'test']);
 gulp.task('default', ['static', 'test', 'coveralls']);
