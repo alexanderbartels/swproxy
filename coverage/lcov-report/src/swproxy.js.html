@@ -15,10 +15,10 @@
 <div class="header high">
     <h1>Code coverage report for <span class="entity">src/swproxy.js</span></h1>
     <h2>
-        Statements: <span class="metric">93.18% <small>(41 / 44)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Branches: <span class="metric">100% <small>(14 / 14)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Functions: <span class="metric">53.85% <small>(7 / 13)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
-        Lines: <span class="metric">81.25% <small>(13 / 16)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">94.34% <small>(50 / 53)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">100% <small>(20 / 20)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">62.5% <small>(10 / 16)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">88% <small>(22 / 25)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         Ignored: <span class="metric">5 statements, 4 branches</span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
     <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">src/</a> &#187; swproxy.js</div>
@@ -85,17 +85,61 @@
 58
 59
 60
-61</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -119,6 +163,42 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -151,11 +231,15 @@
 /*eslint-disable no-alert, no-console */
 class SwProxy {
   constructor(serviceWorker) {
+    this.installRules = [];
+    this.activateRules = [];
+    this.fetchRules = [];
     this.serviceWorker = serviceWorker;
 &nbsp;
     this.serviceWorker.addEventListener('install', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onInstall(event));
     this.serviceWorker.addEventListener('activate', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onActivate(event));
     this.serviceWorker.addEventListener('fetch', <span class="fstat-no" title="function not covered" >(event)</span> =&gt; this.onFetch(event));
+&nbsp;
   }
 &nbsp;
   /**
@@ -182,6 +266,42 @@ class SwProxy {
   }
 &nbsp;
   /**
+   * adds a new rule, that will be executed, if the install event gets fired.
+   * The rule should return a Promise.
+   *
+   * @param {function} the rule to be executed.
+   */
+  addInstallRule(rule) {
+    if (typeof rule === 'function') {
+      this.installRules.push(rule);
+    }
+  }
+&nbsp;
+  /**
+   * adds a new rule, that will be executed, if the activate event gets fired.
+   * The rule should return a Promise.
+   *
+   * @param {function} the rule to be executed.
+   */
+  addActivateRule(rule) {
+    if (typeof rule === 'function') {
+      this.activateRules.push(rule);
+    }
+  }
+&nbsp;
+  /**
+   * adds a new rule, that will be executed, if the fetch event gets fired.
+   * The rule should return a Promise.
+   *
+   * @param {function} the rule to be executed.
+   */
+  addFetchRule(rule) {
+    if (typeof rule === 'function') {
+      this.fetchRules.push(rule);
+    }
+  }
+&nbsp;
+  /**
    * called if the install event from the service worker is fired
    */
   onInstall<span class="fstat-no" title="function not covered" >(event) {</span>
@@ -199,7 +319,7 @@ class SwProxy {
    * called if the fetch event from the service worker is fired
    */
   onFetch<span class="fstat-no" title="function not covered" >(event) {</span>
-<span class="cstat-no" title="statement not covered" >    console.log('activate event fired: ', event);</span>
+<span class="cstat-no" title="statement not covered" >    console.log('fetch event fired: ', event);</span>
   }
 }
 /*eslint-enable no-alert, no-console */
@@ -210,7 +330,7 @@ export default SwProxy;
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Nov 22 2015 21:36:47 GMT+0100 (CET)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Nov 22 2015 23:02:39 GMT+0100 (CET)</div>
 </div>
 <script src="../prettify.js"></script>
 <script>

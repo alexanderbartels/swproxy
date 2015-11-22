@@ -49,4 +49,43 @@ describe('swproxy:app', function () {
 
     assert.notOk(proxy.registerMod(InvalidMockMod), 'Invalid Mod cannot be registered');
   });
+
+  it('provides a function to register install rules', function () {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.addInstallRule, 'function');
+
+    assert.equal(proxy.installRules.length, 0, 'no install rules are created at setup');
+
+    proxy.addInstallRule(function () {});
+    assert.equal(proxy.installRules.length, 1, 'install rules can be added');
+
+    proxy.addInstallRule({});
+    assert.equal(proxy.installRules.length, 1, 'install rules cannot be added if it is not a function');
+  });
+
+  it('provides a function to register activate rules', function () {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.addActivateRule, 'function');
+
+    assert.equal(proxy.activateRules.length, 0, 'no activate rules are created at setup');
+
+    proxy.addActivateRule(function () {});
+    assert.equal(proxy.activateRules.length, 1, 'activate rules can be added');
+
+    proxy.addActivateRule({});
+    assert.equal(proxy.activateRules.length, 1, 'activate rules cannot be added if it is not a function');
+  });
+
+  it('provides a function to register fetch rules', function () {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.addFetchRule, 'function');
+
+    assert.equal(proxy.fetchRules.length, 0, 'no fetch rules are created at setup');
+
+    proxy.addFetchRule(function () {});
+    assert.equal(proxy.fetchRules.length, 1, 'fetch rules can be added');
+
+    proxy.addFetchRule({});
+    assert.equal(proxy.fetchRules.length, 1, 'fetch rules cannot be added if it is not a function');
+  });
 });
