@@ -1,7 +1,7 @@
 /**
  * The Proxy for service workers
  */
-/*eslint-disable no-alert, no-console */
+/*eslint-disable no-console */
 class SwProxy {
   constructor(serviceWorker) {
     this.installRules = [];
@@ -45,9 +45,7 @@ class SwProxy {
    * @param {function} the rule to be executed.
    */
   addInstallRule(rule) {
-    if (typeof rule === 'function') {
-      this.installRules.push(rule);
-    }
+    this.installRules.push(rule);
   }
 
   /**
@@ -78,7 +76,23 @@ class SwProxy {
    * called if the install event from the service worker is fired
    */
   onInstall(event) {
+    if (this.installRules.length === 0) {
+      return;
+    }
+
+    let request = event.request.clone();
     console.log('install event fired: ', event);
+
+    // execute all install rules in sync, like here => https://github.com/DukeyToo/es6-promise-patterns
+    let rules = this.filterRules(this.installRules, request);
+    event.waitUntil(rules.reduce((prev, curr) => {
+      return prev.then((result) => {
+        return curr.execute(event, result);
+      });
+    }, new Promise((resolve) => resolve({}))).then((result) => {
+      console.log('result', result);
+      return new Promise((resolve) => resolve());
+    }));
   }
 
   /**
@@ -94,7 +108,18 @@ class SwProxy {
   onFetch(event) {
     console.log('fetch event fired: ', event);
   }
+
+  /**
+   * filters the given rules to match the given route
+   *
+   * @param rules {Array} array with rules. Each rule should provide a function #match(request).
+   * @param route the route to check
+   * @returns {Array} with all rules that should be executed for the given request
+   */
+  filterRules(rules, request) {
+    return rules.filter(r => r.match && r.match(request) && r);
+  }
 }
-/*eslint-enable no-alert, no-console */
+/*eslint-enable no-console */
 
 export default SwProxy;

@@ -60,7 +60,7 @@ describe('swproxy:app', function () {
     assert.equal(proxy.installRules.length, 1, 'install rules can be added');
 
     proxy.addInstallRule({});
-    assert.equal(proxy.installRules.length, 1, 'install rules cannot be added if it is not a function');
+    assert.equal(proxy.installRules.length, 2, 'install rules cannot be added if it is not a function');
   });
 
   it('provides a function to register activate rules', function () {
@@ -87,5 +87,52 @@ describe('swproxy:app', function () {
 
     proxy.addFetchRule({});
     assert.equal(proxy.fetchRules.length, 1, 'fetch rules cannot be added if it is not a function');
+  });
+
+  it('provides a function to filter rules by request', function () {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.filterRules, 'function');
+
+    let matchingRule = {
+      match: () => true
+    };
+
+    let differentRule = {
+      match: () => false
+    };
+
+    assert.equal(proxy.filterRules([matchingRule, differentRule], 'dummyRequest').length, 1, 'filter returns the rules that matches the given request');
+    assert.deepEqual(proxy.filterRules([matchingRule]), [matchingRule], 'filter returns the rules that matches the given request');
+
+  });
+
+  it('should executes install rules on install event', function () {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.onInstall, 'function');
+    let i = 0;
+    let matchingRule = {
+      match: () => true,
+      execute: function (input) {
+        return new Promise(function (resolve) {
+          i = i + 1;
+          var output = (input || '') + i + ' ';
+          resolve(output);
+        });
+      }
+    };
+
+    assert.equal(proxy.filterRules([matchingRule], 'dummyRequest').length, 1, 'filter returns the rules that matches the given request');
+    proxy.addInstallRule(matchingRule);
+    proxy.addInstallRule(matchingRule);
+    proxy.addInstallRule(matchingRule);
+    proxy.addInstallRule(matchingRule);
+    proxy.addInstallRule(matchingRule);
+    proxy.addInstallRule(matchingRule);
+    proxy.onInstall({
+      request: {
+        clone: () => {}
+      },
+      waitUntil: () => {}
+    });
   });
 });
