@@ -60,7 +60,7 @@ describe('swproxy:app', function () {
     assert.equal(proxy.installRules.length, 1, 'install rules can be added');
 
     proxy.addInstallRule({});
-    assert.equal(proxy.installRules.length, 2, 'install rules cannot be added if it is not a function');
+    assert.equal(proxy.installRules.length, 2, 'install rules can be added if it is not a function');
   });
 
   it('provides a function to register activate rules', function () {
@@ -73,7 +73,7 @@ describe('swproxy:app', function () {
     assert.equal(proxy.activateRules.length, 1, 'activate rules can be added');
 
     proxy.addActivateRule({});
-    assert.equal(proxy.activateRules.length, 1, 'activate rules cannot be added if it is not a function');
+    assert.equal(proxy.activateRules.length, 2, 'activate rules can be added if it is not a function');
   });
 
   it('provides a function to register fetch rules', function () {
@@ -86,7 +86,7 @@ describe('swproxy:app', function () {
     assert.equal(proxy.fetchRules.length, 1, 'fetch rules can be added');
 
     proxy.addFetchRule({});
-    assert.equal(proxy.fetchRules.length, 1, 'fetch rules cannot be added if it is not a function');
+    assert.equal(proxy.fetchRules.length, 2, 'fetch rules can be added if it is not a function');
   });
 
   it('provides a function to filter rules by request', function () {
@@ -106,9 +106,72 @@ describe('swproxy:app', function () {
 
   });
 
-  it('should executes install rules on install event', function () {
+  it('should executes install rules on install event', function (done) {
     assert.typeOf(proxy, 'object');
     assert.typeOf(proxy.onInstall, 'function');
+
+    let matchingRule = {
+      match: () => true,
+      execute: function () {
+        return new Promise(function (resolve) {
+          resolve('install-event');
+        });
+      }
+    };
+
+    proxy.addInstallRule(matchingRule);
+
+    proxy.onInstall({
+      request: {
+        clone: () => {}
+      },
+      waitUntil: (promise) => {
+        promise.then((result) => {
+          assert.equal('install-event', result, 'every rule executed once');
+          done();
+        });
+      }
+    });
+  });
+
+  it('should executes activate rules on activate event', function (done) {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.onActivate, 'function');
+
+    let matchingRule = {
+      match: () => true,
+      execute: function (input) {
+        return new Promise(function (resolve) {
+          if (!input.value) {
+            input.value = '';
+          }
+          input.value = input.value + 'activate-input ';
+          resolve(input);
+        });
+      }
+    };
+
+    proxy.addActivateRule(matchingRule);
+    proxy.addActivateRule(matchingRule);
+    proxy.addActivateRule(matchingRule);
+
+    proxy.onActivate({
+      request: {
+        clone: () => {}
+      },
+      waitUntil: (promise) => {
+        promise.then((result) => {
+          assert.equal('activate-input activate-input activate-input ', result.value, 'every rule executed once');
+          done();
+        });
+      }
+    });
+  });
+
+  it('should executes a promise chain for all given rules', function (done) {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.callPromiseChain, 'function');
+
     let i = 0;
     let matchingRule = {
       match: () => true,
@@ -121,18 +184,52 @@ describe('swproxy:app', function () {
       }
     };
 
-    assert.equal(proxy.filterRules([matchingRule], 'dummyRequest').length, 1, 'filter returns the rules that matches the given request');
-    proxy.addInstallRule(matchingRule);
-    proxy.addInstallRule(matchingRule);
-    proxy.addInstallRule(matchingRule);
-    proxy.addInstallRule(matchingRule);
-    proxy.addInstallRule(matchingRule);
-    proxy.addInstallRule(matchingRule);
-    proxy.onInstall({
+    let resultPromise = proxy.callPromiseChain({
       request: {
         clone: () => {}
       },
       waitUntil: () => {}
-    });
+    }, [matchingRule, matchingRule, matchingRule, matchingRule, matchingRule]);
+
+    assert.ok(resultPromise);
+    resultPromise.then(() => done());
+  });
+
+  it('should executes a promise chain and return a failing promise if one rule failed', function (done) {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.callPromiseChain, 'function');
+
+    let i = 0;
+    let failingRule = {
+      match: () => true,
+      execute: function () {
+        return new Promise(function (resolve, reject) {
+          reject('An unexpected error occurred.');
+        });
+      }
+    };
+
+    let matchingRule = {
+      match: () => true,
+      execute: function (input) {
+        return new Promise(function (resolve) {
+          i = i + 1;
+          var output = (input || '') + i + ' ';
+          resolve(output);
+        });
+      }
+    };
+
+    let resultPromise = proxy.callPromiseChain({
+      request: {
+        clone: () => {}
+      },
+      waitUntil: (promise) => {
+        promise.then(() => done());
+      }
+    }, [matchingRule, matchingRule, failingRule, matchingRule, matchingRule]);
+
+    assert.ok(resultPromise);
+    resultPromise.catch(() => done());
   });
 });

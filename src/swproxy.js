@@ -12,7 +12,6 @@ class SwProxy {
     this.serviceWorker.addEventListener('install', (event) => this.onInstall(event));
     this.serviceWorker.addEventListener('activate', (event) => this.onActivate(event));
     this.serviceWorker.addEventListener('fetch', (event) => this.onFetch(event));
-
   }
 
   /**
@@ -42,7 +41,7 @@ class SwProxy {
    * adds a new rule, that will be executed, if the install event gets fired.
    * The rule should return a Promise.
    *
-   * @param {function} the rule to be executed.
+   * @param {object} the rule to be executed.
    */
   addInstallRule(rule) {
     this.installRules.push(rule);
@@ -52,24 +51,20 @@ class SwProxy {
    * adds a new rule, that will be executed, if the activate event gets fired.
    * The rule should return a Promise.
    *
-   * @param {function} the rule to be executed.
+   * @param {object} the rule to be executed.
    */
   addActivateRule(rule) {
-    if (typeof rule === 'function') {
-      this.activateRules.push(rule);
-    }
+    this.activateRules.push(rule);
   }
 
   /**
    * adds a new rule, that will be executed, if the fetch event gets fired.
    * The rule should return a Promise.
    *
-   * @param {function} the rule to be executed.
+   * @param {object} the rule to be executed.
    */
   addFetchRule(rule) {
-    if (typeof rule === 'function') {
-      this.fetchRules.push(rule);
-    }
+    this.fetchRules.push(rule);
   }
 
   /**
@@ -83,23 +78,30 @@ class SwProxy {
     let request = event.request.clone();
     console.log('install event fired: ', event);
 
-    // execute all install rules in sync, like here => https://github.com/DukeyToo/es6-promise-patterns
     let rules = this.filterRules(this.installRules, request);
-    event.waitUntil(rules.reduce((prev, curr) => {
-      return prev.then((result) => {
-        return curr.execute(event, result);
-      });
-    }, new Promise((resolve) => resolve({}))).then((result) => {
-      console.log('result', result);
-      return new Promise((resolve) => resolve());
-    }));
+    event.waitUntil(this.callPromiseChain(event, rules));
   }
 
   /**
    * called if the activate event from the service worker is fired
    */
   onActivate(event) {
+    // This happens when the old version is gone.
+    // Here you can make changes that would have broken the old version,
+    // such as deleting old caches and migrating data.
+
+    // Fetch (and other) events will be delayed until this promise settles.
+    // This may delay the load of a page & resources,
+    // so use install for anything that can be done while an old version is still in control.
+    if (this.activateRules.length === 0) {
+      return;
+    }
+
+    let request = event.request.clone();
     console.log('activate event fired: ', event);
+
+    let rules = this.filterRules(this.activateRules, request);
+    event.waitUntil(this.callPromiseChain(event, rules));
   }
 
   /**
@@ -107,6 +109,25 @@ class SwProxy {
    */
   onFetch(event) {
     console.log('fetch event fired: ', event);
+  }
+
+  /**
+   * calls the promise from every given rule in a sync loop.
+   *
+   * @param request the service worker request
+   * @param rules rules withe the promise to execute
+   *
+   * @return Prmoise returned by the promise chain
+   */
+  callPromiseChain(event, rules) {
+    // execute all rules in sync, like here => https://github.com/DukeyToo/es6-promise-patterns
+    return rules.reduce((prev, curr) => {
+      return prev.then((result) => {
+        return curr.execute(event, result);
+      });
+    }, new Promise((resolve) => resolve({}))).then((result) => {
+      return new Promise((resolve) => resolve(result));
+    });
   }
 
   /**
