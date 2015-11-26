@@ -131,6 +131,10 @@ class SwProxy {
         return curr.execute(event, result);
       });
     }, new Promise((resolve) => resolve({}))).then((result) => {
+      let eventCopy = Object.assign({}, event);
+      if (event.request) {
+        eventCopy.request = event.request.clone();
+      }
       return new Promise((resolve) => resolve(result));
     });
   }
