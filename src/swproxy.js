@@ -75,10 +75,9 @@ class SwProxy {
       return;
     }
 
-    let request = event.request.clone();
     console.log('install event fired: ', event);
 
-    let rules = this.filterRules(this.installRules, request);
+    let rules = this.filterRules(this.installRules, event);
     event.waitUntil(this.callPromiseChain(event, rules));
   }
 
@@ -97,10 +96,9 @@ class SwProxy {
       return;
     }
 
-    let request = event.request.clone();
     console.log('activate event fired: ', event);
 
-    let rules = this.filterRules(this.activateRules, request);
+    let rules = this.filterRules(this.activateRules, event);
     event.waitUntil(this.callPromiseChain(event, rules));
   }
 
@@ -133,12 +131,12 @@ class SwProxy {
   /**
    * filters the given rules to match the given route
    *
-   * @param rules {Array} array with rules. Each rule should provide a function #match(request).
-   * @param route the route to check
-   * @returns {Array} with all rules that should be executed for the given request
+   * @param rules {Array} array with rules. Each rule should provide a function #match(request || event).
+   * @param filterObject the route or event to check
+   * @returns {Array} with all rules that should be executed for the given filterObject
    */
-  filterRules(rules, request) {
-    return rules.filter(r => r.match && r.match(request) && r);
+  filterRules(rules, filterObject) {
+    return rules.filter(r => r.match && r.match(filterObject) && r);
   }
 }
 /*eslint-enable no-console */
