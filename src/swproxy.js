@@ -125,18 +125,45 @@ class SwProxy {
    * @return Prmoise returned by the promise chain
    */
   callPromiseChain(event, rules) {
+    let modifiableEvent = this.copyEvent(event);
     // execute all rules in sync, like here => https://github.com/DukeyToo/es6-promise-patterns
-    return rules.reduce((prev, curr) => {
+    return rules.reduceRight((prev, curr) => {
       return prev.then((result) => {
         return curr.execute(event, result);
       });
-    }, new Promise((resolve) => resolve({}))).then((result) => {
-      let eventCopy = Object.assign({}, event);
-      if (event.request) {
-        eventCopy.request = event.request.clone();
-      }
+    }, new Promise((resolve) => resolve(modifiableEvent))).then((result) => {
       return new Promise((resolve) => resolve(result));
     });
+  }
+
+  /**
+   * create a modifiable copy from the given ServiceWorker event
+   *
+   * @param event event to copy
+   * @returns {{}} object with the data from the given event
+     */
+  copyEvent(event) {
+    let eventPropsToCopy = ['timeStamp', 'type', 'returnValue', 'request', 'path',
+      'isReload', 'eventPhase', 'defaultPrevented'];
+
+    let copyEvent = {};
+    eventPropsToCopy.forEach((prop) => {
+      copyEvent[prop] = event[prop] && typeof event[prop].clone === 'function' ? event[prop].clone() : event[prop];
+    });
+
+    // the request property is not available on all events
+    if (copyEvent.request) {
+      let requestPropsToCopy = ['bodyUsed', 'credentials', 'integrity', 'method', 'mode', 'redirect', 'referrer', 'url'];
+      let requestToCopy = copyEvent.request;
+      requestPropsToCopy.forEach((prop) => {
+        copyEvent.request[prop] = requestToCopy[prop] && typeof requestToCopy[prop].clone === 'function' ?
+          requestToCopy[prop].clone() : requestToCopy[prop];
+      });
+
+      copyEvent.request.headers = {};
+    }
+
+    return copyEvent;
   }
 
   /**

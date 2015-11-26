@@ -137,13 +137,13 @@ describe('swproxy:app', function () {
 
     let matchingRule = {
       match: () => true,
-      execute: function (input) {
+      execute: function (origEvent, event) {
         return new Promise(function (resolve) {
-          if (!input.value) {
-            input.value = '';
+          if (!event.value) {
+            event.value = '';
           }
-          input.value = input.value + 'activate-input ';
-          resolve(input);
+          event.value = event.value + 'activate-input ';
+          resolve(event);
         });
       }
     };
@@ -168,13 +168,13 @@ describe('swproxy:app', function () {
 
     let matchingRule = {
       match: () => true,
-      execute: function (input) {
+      execute: function (origEvent, event) {
         return new Promise(function (resolve) {
-          if (!input.value) {
-            input.value = '';
+          if (!event.value) {
+            event.value = '';
           }
-          input.value = input.value + 'fetch-input ';
-          resolve(input);
+          event.value = event.value + 'fetch-input ';
+          resolve(event);
         });
       }
     };
@@ -184,8 +184,8 @@ describe('swproxy:app', function () {
 
     proxy.onFetch({
       respondWith: (promise) => {
-        promise.then((result) => {
-          assert.equal('fetch-input fetch-input ', result.value, 'every rule executed once');
+        promise.then((event) => {
+          assert.equal('fetch-input fetch-input ', event.value, 'every rule executed once');
           done();
         });
       }
