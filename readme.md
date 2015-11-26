@@ -2,7 +2,9 @@
 [![NPM version][npm-image]][npm-url] [![wercker status](https://app.wercker.com/status/60a2d039560adbf52b7b1467b49fdc7a/m/master "wercker status")](https://app.wercker.com/project/bykey/60a2d039560adbf52b7b1467b49fdc7a)
 [![Dependency Status][daviddm-image]][daviddm-url]
 
-## work in progress
+# currently a work in progress
+
+with swproxy you can develop a service worker in a declarative way.
 
 
 [npm-image]: https://badge.fury.io/js/swproxy.svg

@@ -106,7 +106,14 @@ class SwProxy {
    * called if the fetch event from the service worker is fired
    */
   onFetch(event) {
+    if (this.fetchRules.length === 0) {
+      return;
+    }
+
     console.log('fetch event fired: ', event);
+
+    let rules = this.filterRules(this.fetchRules, event);
+    event.respondWith(this.callPromiseChain(event, rules));
   }
 
   /**

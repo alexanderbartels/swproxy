@@ -122,9 +122,6 @@ describe('swproxy:app', function () {
     proxy.addInstallRule(matchingRule);
 
     proxy.onInstall({
-      request: {
-        clone: () => {}
-      },
       waitUntil: (promise) => {
         promise.then((result) => {
           assert.equal('install-event', result, 'every rule executed once');
@@ -156,12 +153,39 @@ describe('swproxy:app', function () {
     proxy.addActivateRule(matchingRule);
 
     proxy.onActivate({
-      request: {
-        clone: () => {}
-      },
       waitUntil: (promise) => {
         promise.then((result) => {
           assert.equal('activate-input activate-input activate-input ', result.value, 'every rule executed once');
+          done();
+        });
+      }
+    });
+  });
+
+  it('should executes fetch rules on fetch event', function (done) {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.onFetch, 'function');
+
+    let matchingRule = {
+      match: () => true,
+      execute: function (input) {
+        return new Promise(function (resolve) {
+          if (!input.value) {
+            input.value = '';
+          }
+          input.value = input.value + 'fetch-input ';
+          resolve(input);
+        });
+      }
+    };
+
+    proxy.addFetchRule(matchingRule);
+    proxy.addFetchRule(matchingRule);
+
+    proxy.onFetch({
+      respondWith: (promise) => {
+        promise.then((result) => {
+          assert.equal('fetch-input fetch-input ', result.value, 'every rule executed once');
           done();
         });
       }
@@ -185,9 +209,6 @@ describe('swproxy:app', function () {
     };
 
     let resultPromise = proxy.callPromiseChain({
-      request: {
-        clone: () => {}
-      },
       waitUntil: () => {}
     }, [matchingRule, matchingRule, matchingRule, matchingRule, matchingRule]);
 
@@ -221,9 +242,6 @@ describe('swproxy:app', function () {
     };
 
     let resultPromise = proxy.callPromiseChain({
-      request: {
-        clone: () => {}
-      },
       waitUntil: (promise) => {
         promise.then(() => done());
       }
