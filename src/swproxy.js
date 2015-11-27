@@ -153,11 +153,10 @@ class SwProxy {
 
     // the request property is not available on all events
     if (copyEvent.request) {
-      copyEvent.request = {};
-
       let requestPropsToCopy = ['bodyUsed', 'credentials', 'integrity', 'method', 'mode', 'redirect', 'referrer', 'url'];
       let requestToCopy = copyEvent.request;
 
+      copyEvent.request = {};
       requestPropsToCopy.forEach((prop) => {
         copyEvent.request[prop] = requestToCopy[prop] && typeof requestToCopy[prop].clone === 'function' ?
           requestToCopy[prop].clone() : requestToCopy[prop];
