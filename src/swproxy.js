@@ -131,9 +131,18 @@ class SwProxy {
       return prev.then((result) => {
         return curr.execute(event, result);
       });
-    }, new Promise((resolve) => resolve(modifiableEvent))).then((result) => {
-      return new Promise((resolve) => resolve(result));
+    }, new Promise((resolve) => resolve(modifiableEvent))).then((e) => {
+      if (e.type === 'fetch') {
+        return this.doFetch();
+      }
+      return new Promise((resolve) => resolve(e));
     });
+  }
+
+  doFetch(event) {
+    /*eslint-disable no-undef */
+    return fetch(event.request.url, event.request);
+    /*eslint-enable no-undef */
   }
 
   /**
