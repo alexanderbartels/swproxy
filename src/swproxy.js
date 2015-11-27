@@ -133,7 +133,7 @@ class SwProxy {
       });
     }, new Promise((resolve) => resolve(modifiableEvent))).then((e) => {
       if (e.type === 'fetch') {
-        return this.doFetch();
+        return this.doFetch(e);
       }
       return new Promise((resolve) => resolve(e));
     });
