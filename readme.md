@@ -7,6 +7,57 @@
 with swproxy you can develop a service worker in a declarative way.
 
 
+## Usage
+
+install swproxy via npm:
+```shell
+npm install --save swproxy
+```
+
+load swproxy as dependency in your serviceworker.js file:
+```javascript
+importScripts('./js/swproxy.js'); // swproxy.js is located under node_modules/swproxy/dist/swproxy.js
+```
+
+To define rules for the swproxy, you need to load some swproxy-mods.
+You can search for them on [npm](https://www.npmjs.com/search?q=swproxy) or via the [swproxy website](http://www.alexanderbartels.com/swproxy-www)
+Mods have to be loaded like the swproxy itself:
+
+```shell
+// install a swproxy-mod via npm. e.g. swproxy-mod-rewrite
+npm install --save swproxy-mod-rewrite
+```
+
+```javascript
+// in your serviceworker.js
+importScripts('./js/swproxy-mod-rewrite.js'); // swproxy-mod-rewrite.js is located under node_modules/swproxy-mod-rewrite/dist/swproxy-mod-rewrite.js
+```
+
+
+Based on the mods you're loading in your ServiceWorker, new methods are populated to the swproxy (the factory method).
+```javascript
+// in your serviceworker.js file ...
+
+// load the swproxy stuff
+importScripts('./js/swproxy.js');
+importScripts('./js/swproxy-mod-rewrite.js'); 
+
+// initiate the swproxy, you need to pass 'self' as the constructor argument, 
+// so the proxy can add event listeners to the service worker.
+var proxy = new SwProxy(self);
+
+// next you need to register the Mods, you want to use (Make sure you have loaded them via 'importScripts(...)'
+proxy.registerMod(ModRewrite);
+ 
+// after registering a mod, new methods on your swproxy instance are available. e.g. 'rewriteRule(...)'
+proxy.rewriteRule(new RegExp('.*/swproxy/mods$', ''), '/some/other/path', {});
+```
+
+
+... TODO ... more documentation
+===============================
+
+
 ### Mod 
 ```javascript
 class ModRewrite {
