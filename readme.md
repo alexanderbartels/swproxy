@@ -8,7 +8,7 @@ with swproxy you can develop a service worker in a declarative way.
 
 
 ### Mod 
-'''
+```javascript
 class ModRewrite {
    static factoryMethodName() {
       return 'rewriteRule';
@@ -27,11 +27,11 @@ class ModRewrite {
 swproxy.registerMod(ModRewrite);
 
 swproxy.rewriteRule('param1', 'param2', 'param3');
-'''
+```
 
 ### Rule
 
-'''
+```javascript
 class RewriteRule {
    match: (event) => true,
    execute: (originalEvent, event) {
@@ -40,7 +40,7 @@ class RewriteRule {
     });
    }
 }
-'''
+```
 
 
 [npm-image]: https://badge.fury.io/js/swproxy.svg
