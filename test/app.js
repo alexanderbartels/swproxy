@@ -250,4 +250,78 @@ describe('swproxy:app', function () {
     assert.ok(resultPromise);
     resultPromise.catch(() => done());
   });
+
+  it('should executes a promise chain until stopPropagation was defined', function (done) {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.callPromiseChain, 'function');
+
+    let stopRule = {
+      match: () => true,
+      execute: function () {
+        return new Promise((resolve) => {
+          resolve({
+            stopPropagation: true
+          });
+        });
+      }
+    };
+
+    let ignoredRule = {
+      match: () => true,
+      execute: function (origEvent, event) {
+        return new Promise(function (resolve) {
+          assert.ok(false, 'should never be called');
+          resolve(event);
+        });
+      }
+    };
+
+    let resultPromise = proxy.callPromiseChain({
+    }, [stopRule, ignoredRule]);
+
+    assert.ok(resultPromise);
+    resultPromise.then(() => {
+      done();
+    });
+  });
+
+  it('doFetch called always at the end of a feth promise chain', function (done) {
+    assert.typeOf(proxy, 'object');
+    assert.typeOf(proxy.callPromiseChain, 'function');
+
+    let calledRules = [];
+    let origDoFetch = proxy.doFetch;
+    proxy.doFetch = () => {
+      // remove doFetch Mock;
+      proxy.doFetch = origDoFetch;
+      assert.deepEqual(calledRules, ['rule-1', 'rule-2'], 'All rules were called in the correct order');
+      done();
+    }; // test is ready, if doFetch was called
+
+    let rule = {
+      match: () => true,
+      execute: function (origEvent, event) {
+        return new Promise((resolve) => {
+          calledRules.push('rule-1');
+          resolve(event);
+        });
+      }
+    };
+
+    let rule2 = {
+      match: () => true,
+      execute: function (origEvent, event) {
+        return new Promise((resolve) => {
+          calledRules.push('rule-2');
+          resolve(event);
+        });
+      }
+    };
+
+    let resultPromise = proxy.callPromiseChain({
+      type: 'fetch'
+    }, [rule, rule2]);
+
+    assert.ok(resultPromise);
+  });
 });

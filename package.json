@@ -1,6 +1,6 @@
 {
   "name": "swproxy",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "swproxy is a library to write service workers with ease.",
   "homepage": "http://www.alexanderbartels.com/swproxy-www",
   "author": {

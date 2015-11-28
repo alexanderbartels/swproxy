@@ -53,6 +53,8 @@ proxy.registerMod(ModRewrite);
 proxy.rewriteRule(new RegExp('.*/swproxy/mods$', ''), '/some/other/path', {});
 ```
 
+# writing your own swproxy mod
+
 
 ... TODO ... more documentation
 ===============================

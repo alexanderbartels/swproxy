@@ -127,8 +127,12 @@ class SwProxy {
   callPromiseChain(event, rules) {
     let modifiableEvent = this.copyEvent(event);
     // execute all rules in sync, like here => https://github.com/DukeyToo/es6-promise-patterns
-    return rules.reduceRight((prev, curr) => {
+    return rules.reduce((prev, curr) => {
       return prev.then((result) => {
+        if (result.stopPropagation){
+          // if stopPropagation was set to true, don't call the next user defined rules
+          return new Promise((resolve) => resolve(result));
+        }
         return curr.execute(event, result);
       });
     }, new Promise((resolve) => resolve(modifiableEvent))).then((e) => {
