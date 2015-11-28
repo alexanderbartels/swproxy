@@ -53,6 +53,13 @@ proxy.registerMod(ModRewrite);
 proxy.rewriteRule(new RegExp('.*/swproxy/mods$', ''), '/some/other/path', {});
 ```
 
+### Modifier
+Each rule should accept an Modifier Object as last argument.
+Currently available global modifier:
+```
+ * {boolean} stopPropagation => following defined rules won't be executed
+```
+
 # writing your own swproxy mod
 
 
