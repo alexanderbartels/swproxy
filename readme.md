@@ -103,6 +103,10 @@ class RewriteRule {
 ```
 
 
+## License
+
+MIT © [Alexander Bartels](http://www.alexanderbartels.com)
+
 [npm-image]: https://badge.fury.io/js/swproxy.svg
 [npm-url]: https://npmjs.org/package/swproxy
 [daviddm-image]: https://david-dm.org/alexanderbartels/swproxy.svg?theme=shields.io
