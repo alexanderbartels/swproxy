@@ -58,6 +58,9 @@ Each rule should accept an Modifier Object as last argument.
 Currently available global modifier:
 ```
  * {boolean} stopPropagation => following defined rules won't be executed
+ * {boolean} executeFetch => (hidden modifier, should set by mods) only if the event is from type 'event'. if false, no fetch request will executed at the end. 
+                              This must done manually by the the mod who sets this flag to false. 
+                              This mod should resolve the promise with a Response Object, not like normal with an event object
 ```
 
 # writing your own swproxy mod

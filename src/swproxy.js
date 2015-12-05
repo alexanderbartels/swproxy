@@ -136,10 +136,10 @@ class SwProxy {
         return curr.execute(event, result);
       });
     }, new Promise((resolve) => resolve(modifiableEvent))).then((e) => {
-      if (e.type === 'fetch') {
+      if (e.type === 'fetch' && e.executeFetch) {
         return this.doFetch(e);
       }
-      return new Promise((resolve) => resolve(e));
+      return new Promise((resolve) => resolve(e.response ? e.response : e));
     });
   }
 
@@ -176,6 +176,11 @@ class SwProxy {
       });
 
       copyEvent.request.headers = {};
+    }
+
+    // set executeFetch default for fetch events
+    if (copyEvent.type === 'fetch') {
+      copyEvent.executeFetch = true;
     }
 
     return copyEvent;
